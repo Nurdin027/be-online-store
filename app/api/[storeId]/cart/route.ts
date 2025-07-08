@@ -231,6 +231,7 @@ export async function PUT(req: Request, {params}: { params: Promise<{ storeId: s
 
     const purchase = await db.payment.create({
       data: {
+        storeId,
         userId,
         paymentCode,
         totalPrice,

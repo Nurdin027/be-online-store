@@ -26,6 +26,7 @@ const ProductsPage = async ({params}: { params: Promise<{ storeId: string }> }) 
     isArchived: item.isArchived,
     isAvailable: item.isAvailable,
     price: formatter.format(item.price.toNumber()),
+    // @ts-ignore
     discountPrice: item.discountPrice?.toNumber() !== 0 ? formatter.format(item.discountPrice?.toNumber()) : "-",
     category: item.category.name,
     createdAt: format(item.createdAt, "MMM do, yyyy"),

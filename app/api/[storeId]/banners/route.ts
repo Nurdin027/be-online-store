@@ -60,7 +60,7 @@ export async function GET(
   {params}: { params: Promise<{ storeId: string }> }
 ) {
   try {
-    const storeId = await params
+    const {storeId} = await params
     if (!storeId) {
       return new NextResponse("Store id URL dibutuhkan");
     }

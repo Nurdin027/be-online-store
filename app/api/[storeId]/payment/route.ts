@@ -109,6 +109,7 @@ export async function POST(req: Request, {params}: { params: Promise<{ storeId: 
 
     const purchase = await db.payment.create({
       data: {
+        storeId,
         userId,
         paymentCode,
         totalPrice,
