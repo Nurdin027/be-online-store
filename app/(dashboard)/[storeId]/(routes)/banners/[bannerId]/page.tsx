@@ -1,9 +1,7 @@
 import db from "@/lib/db";
 import {BannerForm} from "./components/banner-form";
 
-const BannerPage = async ({
-                            params
-                          }: {
+const BannerPage = async ({params}: {
   params: Promise<{ bannerId: string }>
 }) => {
   const {bannerId} = await params,
