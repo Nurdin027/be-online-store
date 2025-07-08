@@ -5,7 +5,7 @@ import {format} from "date-fns";
 import {formatter} from "@/lib/utils";
 
 interface DashboardPageProps {
-  params: { storeId: string };
+  params: Promise<{ storeId: string }>;
 }
 
 const DashboardPage = async ({params}: DashboardPageProps) => {
