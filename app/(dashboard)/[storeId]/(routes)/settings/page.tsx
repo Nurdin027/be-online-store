@@ -4,7 +4,7 @@ import {redirect} from "next/navigation";
 import {SettingsForm} from "./components/settings-form";
 
 interface SettingsPageProps {
-  params: Promise<{ storeId: string; }>
+  params: { storeId: string; }
 }
 
 const SettingsPage: React.FC<SettingsPageProps> = async ({params}) => {
@@ -15,13 +15,12 @@ const SettingsPage: React.FC<SettingsPageProps> = async ({params}) => {
     redirect('/sign-in')
   }
 
-  const storeId = await params,
-    store = await db.store.findFirst({
-      where: {
-        id: storeId,
-        userId
-      }
-    })
+  const store = await db.store.findFirst({
+    where: {
+      id: params.storeId,
+      userId
+    }
+  })
 
   if (!store) {
     redirect('/')
