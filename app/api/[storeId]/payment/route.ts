@@ -20,8 +20,9 @@ interface CartItem {
   subtotal: number;
 }
 
-export async function POST(req: Request, {params}: { params: { storeId: string } }) {
+export async function POST(req: Request, {params}: { params: Promise<{ storeId: string }> }) {
   try {
+    const {storeId} = await params
     const body = await req.json();
     const {userId, customerName, customerPhone, customerAddress, cart} = body;
 
@@ -96,7 +97,7 @@ export async function POST(req: Request, {params}: { params: { storeId: string }
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Basic ' + keybase64,
-        'X-Override-Notification': `${process.env.CALLBACK_URL}/api/${params.storeId}/payment/${paymentCode}`,
+        'X-Override-Notification': `${process.env.CALLBACK_URL}/api/${storeId}/payment/${paymentCode}`,
       }
     await axios.post("https://app.sandbox.midtrans.com/snap/v1/transactions", payload, {headers: header}).then(res => {
       token = res.data.token

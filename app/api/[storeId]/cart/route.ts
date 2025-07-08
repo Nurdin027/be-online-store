@@ -6,9 +6,10 @@ import {format} from "date-fns";
 
 export async function POST(
   req: Request,
-  {params}: { params: { storeId: string } }
+  {params}: { params: Promise<{ storeId: string }> }
 ) {
   try {
+    const {storeId} = await params
     const body = await req.json();
     const {userId, productId, quantity} = body;
 
@@ -24,14 +25,14 @@ export async function POST(
       return new NextResponse("Quantity minimal 1 diperlukan", {status: 400, headers: corsHeaders()});
     }
 
-    if (!params.storeId) {
+    if (!storeId) {
       return new NextResponse("Store ID di URL dibutuhkan", {status: 400, headers: corsHeaders()});
     }
 
     // Cek apakah store tersebut milik user yang sedang login
     const storeByUserId = await db.store.findFirst({
       where: {
-        id: params.storeId,
+        id: storeId,
         userId,
       },
     });
@@ -45,7 +46,7 @@ export async function POST(
       where: {
         userId,
         productId,
-        storeId: params.storeId,
+        storeId: storeId,
       },
     });
 
@@ -59,7 +60,7 @@ export async function POST(
         userId,
         productId,
         quantity,
-        storeId: params.storeId,
+        storeId: storeId,
       },
     });
 
@@ -89,8 +90,9 @@ export async function OPTIONS() {
   });
 }
 
-export async function GET(req: Request, {params}: { params: { storeId: string } }) {
+export async function GET(req: Request, {params}: { params: Promise<{ storeId: string }> }) {
   try {
+    const {storeId} = await params
     const {searchParams} = new URL(req.url);
     const userId = searchParams.get("userId");
 
@@ -98,7 +100,7 @@ export async function GET(req: Request, {params}: { params: { storeId: string } 
       return new NextResponse("User ID diperlukan dalam query params", {status: 400, headers: corsHeaders()});
     }
 
-    if (!params.storeId) {
+    if (!storeId) {
       return new NextResponse("Store ID di URL dibutuhkan", {status: 400, headers: corsHeaders()});
     }
 
@@ -106,7 +108,7 @@ export async function GET(req: Request, {params}: { params: { storeId: string } 
     const cartItems = await db.cart.findMany({
       where: {
         userId,
-        storeId: params.storeId,
+        storeId: storeId,
       },
       include: {
         product: true, // Termasuk informasi produk
@@ -140,8 +142,9 @@ interface CartItem {
   subtotal: number;
 }
 
-export async function PUT(req: Request, {params}: { params: { storeId: string } }) {
+export async function PUT(req: Request, {params}: { params: Promise<{ storeId: string }> }) {
   try {
+    const {storeId} = await params
     const body = await req.json();
     const {userId, customerName, customerPhone, customerAddress, cart} = body;
 
@@ -216,7 +219,7 @@ export async function PUT(req: Request, {params}: { params: { storeId: string } 
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Basic ' + keybase64,
-        'X-Override-Notification': `${process.env.CALLBACK_URL}/api/${params.storeId}/payment/${paymentCode}`,
+        'X-Override-Notification': `${process.env.CALLBACK_URL}/api/${storeId}/payment/${paymentCode}`,
       }
     await axios.post("https://app.sandbox.midtrans.com/snap/v1/transactions", payload, {headers: header}).then(res => {
       token = res.data.token

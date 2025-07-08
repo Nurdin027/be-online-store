@@ -4,9 +4,10 @@ import db from "@/lib/db";
 
 export async function POST(
   req: Request,
-  {params}: { params: { storeId: string } }
+  {params}: { params: Promise<{ storeId: string }> }
 ) {
   try {
+    const {storeId} = await params
     const {userId} = auth();
     const body = await req.json();
 
@@ -32,13 +33,13 @@ export async function POST(
       return new NextResponse("Kategori perlu diinput", {status: 400});
     }
 
-    if (!params.storeId) {
+    if (!storeId) {
       return new NextResponse("Store id URL dibutuhkan");
     }
 
     const storeByUserId = await db.store.findFirst({
       where: {
-        id: params.storeId,
+        id: storeId,
         userId,
       },
     });
@@ -57,7 +58,7 @@ export async function POST(
         isFeatured,
         isArchived,
         isAvailable,
-        storeId: params.storeId,
+        storeId: storeId,
         images: {
           createMany: {
             data: [...images.map((image: { url: string }) => image)],
@@ -75,20 +76,21 @@ export async function POST(
 
 export async function GET(
   req: Request,
-  {params}: { params: { storeId: string } }
-  ) {
+  {params}: { params: Promise<{ storeId: string }> }
+) {
   try {
+    const {storeId} = await params
     const {searchParams} = new URL(req.url);
     const categoryId = searchParams.get("categoryId") || undefined;
     const isFeatured = searchParams.get("isFeatured");
 
-    if (!params.storeId) {
+    if (!storeId) {
       return new NextResponse("Store id URL dibutuhkan");
     }
 
     const products = await db.product.findMany({
       where: {
-        storeId: params.storeId,
+        storeId: storeId,
         categoryId,
         isFeatured: isFeatured ? true : undefined,
         isArchived: false,
