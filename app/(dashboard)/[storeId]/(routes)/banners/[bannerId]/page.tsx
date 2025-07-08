@@ -6,7 +6,7 @@ const BannerPage = async ({
                           }: {
   params: Promise<{ bannerId: string }>
 }) => {
-  const bannerId = await params,
+  const {bannerId} = await params,
     banner = await db.banner.findUnique({
       where: {
         id: bannerId

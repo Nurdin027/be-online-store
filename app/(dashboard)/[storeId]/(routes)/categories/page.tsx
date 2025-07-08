@@ -9,18 +9,18 @@ const CategoriesPage = async ({
                               }: {
   params: Promise<{ storeId: string }>
 }) => {
-  const storeId = await params,
-    categories = await db.category.findMany({
-      where: {
-        storeId: storeId
-      },
-      include: {
-        banner: true,
-      },
-      orderBy: {
-        createdAt: 'desc'
-      }
-    })
+  const {storeId} = await params
+  const categories = await db.category.findMany({
+    where: {
+      storeId: storeId
+    },
+    include: {
+      banner: true,
+    },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  })
 
   const formattedCategories: CategoryColumn[] = categories.map((item) => ({
     id: item.id,
