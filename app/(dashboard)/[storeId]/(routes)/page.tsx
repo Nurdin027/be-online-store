@@ -2,16 +2,11 @@ import db from "@/lib/db";
 import {DashboardClient} from "@/app/(dashboard)/[storeId]/(routes)/components/client";
 import {DashboardColumn} from "@/app/(dashboard)/[storeId]/(routes)/components/columns";
 import {format} from "date-fns";
+import {formatter} from "@/lib/utils";
 
 interface DashboardPageProps {
   params: { storeId: string };
 }
-
-const formatter = new Intl.NumberFormat("id-ID", {
-  minimumFractionDigits: 0,
-  style: "currency",
-  currency: "IDR",
-});
 
 const DashboardPage = async ({params}: DashboardPageProps) => {
 

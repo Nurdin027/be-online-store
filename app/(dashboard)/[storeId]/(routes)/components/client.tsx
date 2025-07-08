@@ -26,19 +26,13 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import {formatter} from "@/lib/utils";
 
 
 interface DashboardClientProps {
   data: [DashboardColumn],
   dataChart: [object]
 }
-
-const formatter = new Intl.NumberFormat("id-ID", {
-  minimumFractionDigits: 0,
-  style: "currency",
-  currency: "IDR",
-});
-
 
 const custLblY = (n: any) => {
   if (n > 1000000000) {
