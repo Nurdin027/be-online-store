@@ -5,10 +5,11 @@ import {ProductColumn} from "./components/columns";
 import {format} from "date-fns";
 import {formatter} from "@/lib/utils";
 
-const ProductsPage = async ({params}: { params: { storeId: string } }) => {
+const ProductsPage = async ({params}: { params: Promise<{ storeId: string }> }) => {
+  const {storeId} = await params
   const products = await db.product.findMany({
     where: {
-      storeId: params.storeId,
+      storeId: storeId,
     },
     include: {
       category: true,
