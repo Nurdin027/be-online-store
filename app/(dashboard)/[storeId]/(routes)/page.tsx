@@ -56,7 +56,9 @@ const DashboardPage = async ({params}: DashboardPageProps) => {
         }
         hasil.push({
           name: x.cart.product.name,
+          // @ts-ignore
           price: formatter.format(harga),
+          // @ts-ignore
           intPrice: parseInt(harga),
           quantity: x.cart.quantity,
           total: "0",
