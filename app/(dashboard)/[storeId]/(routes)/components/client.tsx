@@ -21,13 +21,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart"
 import {formatter} from "@/lib/utils";
-
+import MyChartComponent from "@/components/ui/newChart";
 
 interface DashboardClientProps {
   data: [DashboardColumn],
@@ -65,14 +60,19 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({data, dataChart
   const [date, setDate] = useState<Date | undefined>(undefined)
   let filterTgl = false
 
-  const chartConfig = {
-    sale: {
-      label: "Sale",
-      color: "#2563eb",
-    },
-  }
-  const searchParams = useSearchParams()
-  console.log(searchParams.get("date"))
+  // const searchParams = useSearchParams()
+  // console.log(searchParams.get("date"))
+
+  let isiChart = {
+    labels: dataChart.map(v => v.tgl),
+    datasets: [
+      {
+        label: 'Sale',
+        data: dataChart.map(v => v.sale),
+        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+      },
+    ],
+  };
 
   return (
     <>
@@ -87,39 +87,7 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({data, dataChart
             <CardDescription>Weekly Report</CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={chartConfig}>
-              <BarChart
-                accessibilityLayer
-                data={dataChart}
-                margin={{
-                  top: 20,
-                }}
-              >
-                <CartesianGrid vertical={false}/>
-                <XAxis
-                  dataKey="tgl"
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                  tickFormatter={(value) => value}
-                />
-                <YAxis tickFormatter={custLblY}/>
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent hideLabel/>}
-                />
-                <Bar dataKey="sale" fill="var(--color-sale)" radius={8}>
-                  <LabelList
-                    position="top"
-                    offset={12}
-                    className="fill-foreground"
-                    fontSize={12}
-                    dataKey="sale"
-                    content={custLbl}
-                  />
-                </Bar>
-              </BarChart>
-            </ChartContainer>
+            <MyChartComponent data={isiChart}/>
           </CardContent>
         </Card>
         <Card>
@@ -163,7 +131,7 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({data, dataChart
           </Popover>
         </div>
       )}
-
+      <Separator/>
     </>
   );
 };

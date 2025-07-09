@@ -1,23 +1,21 @@
 import Navbar from "@/components/navbar";
 import db from "@/lib/db";
-import { auth } from "@clerk/nextjs";
-import { redirect } from "next/navigation";
+import {auth} from "@clerk/nextjs";
+import {redirect} from "next/navigation";
 
-export default async function DashboardLayout({
-  children,
-  params,
-}: {
+export default async function DashboardLayout({children, params,}: {
   children: React.ReactNode;
-  params: { storeId: string };
+  params: Promise<{ storeId: string }>;
 }) {
-  const { userId } = auth();
+  const {storeId} = await params
+  const {userId} = auth();
   if (!userId) {
     redirect("/sign-in");
   }
 
   const store = await db.store.findFirst({
     where: {
-      id: params.storeId,
+      id: storeId,
       userId: userId,
     },
   });
@@ -27,7 +25,7 @@ export default async function DashboardLayout({
   }
   return (
     <>
-      <Navbar />
+      <Navbar/>
       {children}
     </>
   );
