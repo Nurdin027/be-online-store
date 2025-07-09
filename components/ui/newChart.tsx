@@ -3,11 +3,16 @@ import {Bar} from 'react-chartjs-2';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-type MyChartProps = [
-  { tgl: string, sale: number }
-]
+type MyChartProps = {
+  labels: string[],
+  datasets: {
+    label: string,
+    data: number[],
+    backgroundColor: string
+  }[]
+}
 
-function MyChartComponent({data}: MyChartProps) {
+function MyChartComponent(data: MyChartProps) {
   const options = {
     responsive: true,
     scales: {
