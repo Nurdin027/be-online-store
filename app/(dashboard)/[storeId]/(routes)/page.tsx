@@ -21,9 +21,11 @@ const DashboardPage = async ({params}: DashboardPageProps) => {
     return listna;
   }
 
+  const {storeId} = await params
   const report = await db.payment.findMany({
     where: {
       status: 1,
+      storeId: storeId,
       paidAt: {not: null}
     },
     orderBy: {
@@ -55,13 +57,16 @@ const DashboardPage = async ({params}: DashboardPageProps) => {
           harga = x.cart.product.discountPrice
         }
         hasil.push({
+          paidAt: format(v.paidAt || "", "dd-MM-yyyy"),
+          customer_name: v.customer_name,
           name: x.cart.product.name,
+          quantity: x.cart.quantity,
           // @ts-ignore
           price: formatter.format(harga),
           // @ts-ignore
+          total: formatter.format(harga * x.cart.quantity),
+          // @ts-ignore
           intPrice: parseInt(harga),
-          quantity: x.cart.quantity,
-          total: "0",
         })
       } else {
         let index = hasil.findIndex(item => item.name === x.cart.product.name),
