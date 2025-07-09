@@ -71,38 +71,13 @@ const DashboardPage = async ({params}: DashboardPageProps) => {
       }
     })
   })
-  hasil
-
-  let isian: object[] = [],
-    listTanggal = dateList(),
-    query = await db.payment.findMany({
-      where: {
-        status: 1,
-        paidAt: {
-          gte: listTanggal[0],
-          lte: listTanggal[listTanggal.length - 1],
-        }
-      }
-    })
-  listTanggal.forEach(v => {
-    let sale = 0
-    query.forEach(w => {
-      if (w.paidAt && format(v, "dd/MM/yy") === format(w.paidAt, "dd/MM/yy")) {
-        sale += w.totalPrice
-      }
-    })
-    isian.push({
-      tgl: format(v, "dd/MM/yy"),
-      sale: sale
-    })
-  })
 
   return (
     <div>
       <div className="flex-col">
         <div className="flex-1 space-y-4 p-8 pt-6">
           {/*@ts-ignore*/}
-          <DashboardClient data={hasil} dataChart={isian}/>
+          <DashboardClient data={hasil}/>
         </div>
       </div>
     </div>
