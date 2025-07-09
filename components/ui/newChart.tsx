@@ -3,12 +3,17 @@ import {Bar} from 'react-chartjs-2';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-function MyChartComponent({data}: any) {
+type MyChartProps = [
+  { tgl: string, sale: number }
+]
+
+function MyChartComponent({data}: MyChartProps) {
   const options = {
     responsive: true,
     scales: {
       y: {
         ticks: {
+          stepSize: 1,
           callback: function (value: number) {
             if (value >= (10 ** 9)) {
               return `${value / 10 ** 9}B`
