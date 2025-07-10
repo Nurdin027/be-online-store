@@ -105,15 +105,27 @@ export async function GET(req: Request, {params}: { params: Promise<{ storeId: s
     }
 
     // Ambil data cart berdasarkan userId dan storeId
+    const sold = await db.detailPayment.findMany({
+      select: {
+        cartId: true
+      }
+    });
+    console.log(sold)
     const cartItems = await db.cart.findMany({
       where: {
         userId,
         storeId: storeId,
+        NOT: {
+          id: {
+            in: sold.map(cart => cart.cartId)
+          }
+        }
       },
       include: {
         product: true, // Termasuk informasi produk
       },
     });
+    console.log(cartItems)
 
     return new NextResponse(JSON.stringify(cartItems), {
       status: 200,
