@@ -42,11 +42,20 @@ export async function POST(
     }
 
     // Cek apakah produk sudah ada di cart
+    const paid = await db.detailPayment.findMany({
+        select: {
+          cartId: true
+        }
+      }),
+      paidCart = paid.map((v) => {
+        return v.cartId
+      })
     const existingCartItem = await db.cart.findFirst({
       where: {
         userId,
         productId,
         storeId: storeId,
+        id: {notIn: paidCart}
       },
     });
 
