@@ -60,7 +60,7 @@ export async function POST(
     });
 
     if (existingCartItem) {
-      return new NextResponse("Produk sudah ada di keranjang", {status: 400, headers: corsHeaders()});
+      return new NextResponse("Produk sudah ada di keranjang!", {status: 400, headers: corsHeaders()});
     }
 
     // Tambahkan produk ke cart
