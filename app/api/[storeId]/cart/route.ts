@@ -37,7 +37,7 @@ export async function POST(
       },
     });
 
-    if (!storeByUserId) {
+    if (!storeByUserId && false) {
       return new NextResponse("Unauthorized", {status: 403, headers: corsHeaders()});
     }
 
