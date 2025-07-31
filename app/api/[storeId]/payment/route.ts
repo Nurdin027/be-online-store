@@ -1,6 +1,6 @@
 import {NextResponse} from "next/server";
 import db from "@/lib/db";
-import {auth, clerkClient} from "@clerk/nextjs";
+import {clerkClient} from "@clerk/nextjs";
 import {format} from 'date-fns'
 import axios from "axios";
 
@@ -24,7 +24,7 @@ export async function POST(req: Request, {params}: { params: Promise<{ storeId: 
   try {
     const {storeId} = await params
     const body = await req.json();
-    const {userId, customerName, customerPhone, customerAddress, cart} = body;
+    let {userId, customerName, customerPhone, customerAddress, cart, isSingle} = body;
 
     if (!userId) {
       return new NextResponse("Unauthorized", {status: 401});
@@ -55,6 +55,25 @@ export async function POST(req: Request, {params}: { params: Promise<{ storeId: 
       token = "",
       redirect = "",
       items_detail: object[] = []
+    if (isSingle) {
+      const addCart = await db.cart.create({
+        data: {
+          userId,
+          productId: cart[0]['id'],
+          quantity: cart[0]['quantity'],
+          storeId: storeId,
+        },
+      });
+      cart = [{
+        id: addCart.id,
+        name: cart[0]['name'],
+        price: cart[0]['price'],
+        discountPrice: cart[0]['discountPrice'],
+        quantity: addCart.quantity,
+        image: cart[0]['image'],
+        subtotal: (cart[0]['discountPrice'] || cart[0]['price']) * addCart.quantity,
+      }]
+    }
     cart.forEach(function (v: CartItem) {
       let myCart = db.cart.findFirst({
         where: {userId, id: v.id},
@@ -100,6 +119,7 @@ export async function POST(req: Request, {params}: { params: Promise<{ storeId: 
         'X-Override-Notification': `${process.env.CALLBACK_URL}/api/${storeId}/payment/${paymentCode}`,
       }
     await axios.post("https://app.sandbox.midtrans.com/snap/v1/transactions", payload, {headers: header}).then(res => {
+      console.log(res)
       token = res.data.token
       redirect = res.data.redirect_url
     }).catch(error => {
